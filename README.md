@@ -20,6 +20,8 @@ It is organized for two use cases:
       - AWS + Bloom
       - AWS + Sigma
       - Kumu + Bloom
+    - node search and highlight
+    - shortest-path highlight
     - focus-node neighborhood view
     - node inspector and structure panels
 - LLM-based news impact assessment

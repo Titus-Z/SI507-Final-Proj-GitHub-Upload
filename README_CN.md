@@ -101,6 +101,8 @@ streamlit run query_app.py
     - `AWS + Bloom`
     - `AWS + Sigma`
     - `Kumu + Bloom`
+  - 节点搜索与高亮
+  - 最短路径高亮
   - focus node 邻域浏览
   - inspector 详情面板
   - 过滤节点类型和边类型

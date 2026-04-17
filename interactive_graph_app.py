@@ -198,6 +198,16 @@ VISUAL_PRESETS = {
 }
 
 DEFAULT_STYLE_PROFILE = "AWS + Bloom"
+DEFAULT_GRAPH_TICKERS = [
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "JPM",
+    "XOM",
+    "UNH",
+    "WMT",
+    "GE",
+]
 
 
 def build_style_profile_options() -> list[str]:
@@ -212,6 +222,18 @@ def get_style_profile(profile_name: str | None) -> dict[str, Any]:
     if profile_name and profile_name in STYLE_PROFILES:
         return STYLE_PROFILES[profile_name]
     return STYLE_PROFILES[DEFAULT_STYLE_PROFILE]
+
+
+def hex_to_rgba(hex_color: str, alpha: float) -> str:
+    """Convert one hex color into an rgba() string for highlight states."""
+
+    color = hex_color.lstrip("#")
+    if len(color) != 6:
+        return hex_color
+    red = int(color[0:2], 16)
+    green = int(color[2:4], 16)
+    blue = int(color[4:6], 16)
+    return f"rgba({red}, {green}, {blue}, {alpha})"
 
 
 def node_color(
@@ -398,6 +420,60 @@ def build_focus_node_option_map(graph: nx.Graph) -> dict[str, str]:
     return option_map
 
 
+def build_shortest_path_result(
+    graph: nx.Graph,
+    source_node_id: str | None,
+    target_node_id: str | None,
+) -> dict[str, Any]:
+    """Compute one shortest path summary for graph highlighting."""
+
+    if not source_node_id or not target_node_id:
+        return {"path_nodes": [], "path_edges": [], "status": "missing"}
+    if source_node_id not in graph or target_node_id not in graph:
+        return {"path_nodes": [], "path_edges": [], "status": "invalid"}
+    if source_node_id == target_node_id:
+        return {
+            "path_nodes": [source_node_id],
+            "path_edges": [],
+            "status": "same-node",
+        }
+
+    try:
+        path_nodes = nx.shortest_path(graph, source=source_node_id, target=target_node_id)
+    except nx.NetworkXNoPath:
+        return {"path_nodes": [], "path_edges": [], "status": "no-path"}
+
+    path_edges = list(zip(path_nodes[:-1], path_nodes[1:]))
+    return {
+        "path_nodes": path_nodes,
+        "path_edges": path_edges,
+        "status": "ok",
+    }
+
+
+def build_path_summary_frame(graph: nx.Graph, path_result: dict[str, Any]) -> pd.DataFrame:
+    """Convert one shortest path result into a readable summary table."""
+
+    status = str(path_result.get("status", "missing"))
+    path_nodes = list(path_result.get("path_nodes") or [])
+    if status != "ok":
+        return pd.DataFrame(
+            [{"field": "status", "value": status.replace("-", " ")}]
+        )
+
+    labeled_path = " -> ".join(
+        str(graph.nodes[node_id].get("label") or node_id)
+        for node_id in path_nodes
+    )
+    return pd.DataFrame(
+        [
+            {"field": "status", "value": "path found"},
+            {"field": "hop_count", "value": max(len(path_nodes) - 1, 0)},
+            {"field": "path", "value": labeled_path},
+        ]
+    )
+
+
 def build_component_frame(graph: nx.Graph, limit: int = 8) -> pd.DataFrame:
     """Summarize connected components for fast structure inspection."""
 
@@ -496,6 +572,8 @@ def build_pyvis_html(
     show_physics_controls: bool,
     height_px: int,
     style_profile: dict[str, Any],
+    selected_node_id: str | None = None,
+    path_result: dict[str, Any] | None = None,
 ) -> str:
     """Convert a NetworkX graph into draggable Pyvis HTML."""
 
@@ -517,29 +595,86 @@ def build_pyvis_html(
         cdn_resources="in_line",
     )
 
+    path_result = path_result or {"path_nodes": [], "path_edges": [], "status": "missing"}
+    path_nodes = set(path_result.get("path_nodes") or [])
+    path_edges = {
+        tuple(edge)
+        for edge in (path_result.get("path_edges") or [])
+    }
+    undirected_path_edges = path_edges | {(target, source) for source, target in path_edges}
+    search_neighbor_ids = (
+        set(graph.neighbors(selected_node_id))
+        if selected_node_id and selected_node_id in graph
+        else set()
+    )
+    has_highlight_context = bool(selected_node_id or path_nodes)
+
     # Translate the NetworkX graph into Pyvis nodes so the browser can render a
     # draggable physics-based network.
     for node_id, node_data in graph.nodes(data=True):
         degree = graph.degree(node_id)
+        node_type = str(node_data.get("node_type", "unknown"))
+        base_color = node_color(node_type, style_profile=style_profile)
+        color_config: str | dict[str, Any] = base_color
+        border_width = 1
+        size = node_size(node_data, degree)
+
+        if node_id in path_nodes:
+            color_config = {
+                "background": base_color,
+                "border": "#DC2626",
+                "highlight": {"background": base_color, "border": "#991B1B"},
+            }
+            border_width = 4
+            size += 8
+        elif selected_node_id and node_id == selected_node_id:
+            color_config = {
+                "background": base_color,
+                "border": "#0F172A",
+                "highlight": {"background": base_color, "border": "#020617"},
+            }
+            border_width = 4
+            size += 6
+        elif node_id in search_neighbor_ids:
+            color_config = {
+                "background": base_color,
+                "border": "#F59E0B",
+                "highlight": {"background": base_color, "border": "#D97706"},
+            }
+            border_width = 3
+            size += 3
+        elif has_highlight_context:
+            color_config = hex_to_rgba(base_color, 0.22)
+
         network.add_node(
             node_id,
             label=str(node_data.get("label") or node_id),
             title=build_node_title(node_id, node_data, degree),
-            color=node_color(
-                str(node_data.get("node_type", "unknown")),
-                style_profile=style_profile,
-            ),
-            size=node_size(node_data, degree),
+            color=color_config,
+            size=size,
+            borderWidth=border_width,
         )
 
     for source, target, edge_data in graph.edges(data=True):
+        base_width = edge_width(edge_data)
+        edge_style_color = edge_color(edge_data, style_profile=style_profile)
+        edge_width_value = base_width
+        if (source, target) in undirected_path_edges:
+            edge_style_color = "#DC2626"
+            edge_width_value = max(base_width + 2.5, 4.0)
+        elif selected_node_id and selected_node_id in {source, target}:
+            edge_style_color = "#0F172A"
+            edge_width_value = max(base_width + 1.0, 2.5)
+        elif has_highlight_context:
+            edge_style_color = hex_to_rgba(edge_style_color, 0.18)
+
         network.add_edge(
             source,
             target,
             title=build_edge_title(edge_data),
-            value=edge_width(edge_data),
-            width=edge_width(edge_data),
-            color=edge_color(edge_data, style_profile=style_profile),
+            value=edge_width_value,
+            width=edge_width_value,
+            color=edge_style_color,
         )
 
     # Use the built-in physics helpers instead of overriding the full options
@@ -793,10 +928,10 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
         selected_style_profile = get_style_profile(style_profile_name)
         ticker_text = st.text_input(
             "Ticker Filter",
-            value=",".join(DEFAULT_WEB_TICKERS),
+            value=",".join(DEFAULT_GRAPH_TICKERS),
             help=(
                 "Optional comma-separated tickers to limit the local graph. "
-                "The default uses a broader multi-sector core set."
+                "The default uses a smaller, cleaner multi-sector graph slice."
             ),
         )
         news_file = st.text_input("News File", value="merged_seed_news.json")
@@ -804,14 +939,14 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
             "Correlation Threshold",
             min_value=0.0,
             max_value=1.0,
-            value=0.6,
+            value=0.7,
             step=0.05,
         )
         top_k_value = st.number_input(
             "Top-K Stock Neighbors",
             min_value=0,
             max_value=20,
-            value=2,
+            value=1,
             step=1,
             help="Set to 0 to disable top-k mode.",
         )
@@ -958,6 +1093,25 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
             index=inspector_default_index,
             help="Choose one node for a detail panel and neighbor table.",
         )
+        st.header("Search And Path")
+        selected_search_label = st.selectbox(
+            "Search / Highlight Node",
+            options=["None"] + list(focus_option_map.keys()),
+            index=0,
+            help="Highlight one node and its immediate neighbors in the graph.",
+        )
+        selected_path_source_label = st.selectbox(
+            "Path Start",
+            options=["None"] + list(focus_option_map.keys()),
+            index=0,
+            help="Pick the first endpoint for shortest-path highlighting.",
+        )
+        selected_path_target_label = st.selectbox(
+            "Path End",
+            options=["None"] + list(focus_option_map.keys()),
+            index=0,
+            help="Pick the second endpoint for shortest-path highlighting.",
+        )
 
     focus_node_id = (
         focus_option_map[selected_focus_label]
@@ -974,6 +1128,27 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
         inspector_node_id = focus_option_map.get(selected_inspector_label)
     if inspector_node_id not in filtered_graph:
         inspector_node_id = next(iter(filtered_graph.nodes), None)
+    search_node_id = (
+        focus_option_map[selected_search_label]
+        if selected_search_label != "None"
+        else None
+    )
+    path_source_id = (
+        focus_option_map[selected_path_source_label]
+        if selected_path_source_label != "None"
+        else None
+    )
+    path_target_id = (
+        focus_option_map[selected_path_target_label]
+        if selected_path_target_label != "None"
+        else None
+    )
+    path_result = build_shortest_path_result(
+        filtered_graph,
+        source_node_id=path_source_id,
+        target_node_id=path_target_id,
+    )
+    path_summary_frame = build_path_summary_frame(filtered_graph, path_result)
 
     st.markdown(
         """
@@ -1027,6 +1202,7 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
                     <p><strong>{visual_preset}</strong></p>
                     <p>{preset_description}</p>
                     <p><strong>Style:</strong> {style_profile_name}</p>
+                    <p><strong>Graph Default:</strong> cleaner starter slice, threshold {correlation_threshold:.2f}, top-k {top_k}</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -1057,15 +1233,28 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
             show_physics_controls=show_physics_controls,
             height_px=height_px,
             style_profile=selected_style_profile,
+            selected_node_id=search_node_id,
+            path_result=path_result,
         )
         st.caption(selected_style_profile["canvas_caption"])
+        if search_node_id:
+            st.caption(
+                f"Search highlight active: {filtered_graph.nodes[search_node_id].get('label') or search_node_id}"
+            )
+        if path_result["status"] == "ok":
+            st.caption(
+                f"Shortest path active with {len(path_result['path_nodes']) - 1} hops."
+            )
         components.html(html, height=height_px + 50, scrolling=True)
 
     with inspector_tab:
-        top_left, top_right = st.columns([1.1, 1.4])
+        top_left, top_mid, top_right = st.columns([1.0, 1.0, 1.35])
         with top_left:
             st.caption("Inspector Node Details")
             st.dataframe(node_detail_frame, use_container_width=True, hide_index=True)
+        with top_mid:
+            st.caption("Shortest Path Summary")
+            st.dataframe(path_summary_frame, use_container_width=True, hide_index=True)
         with top_right:
             st.caption("Neighbor Table")
             st.dataframe(neighbor_frame, use_container_width=True, hide_index=True)

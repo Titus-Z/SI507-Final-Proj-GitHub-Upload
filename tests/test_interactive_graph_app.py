@@ -9,6 +9,8 @@ from interactive_graph_app import (
     build_graph_control_frame,
     build_focus_node_option_map,
     build_graph_health_metrics,
+    build_path_summary_frame,
+    build_shortest_path_result,
     build_style_profile_options,
     build_graph_type_frame,
     build_edge_title,
@@ -180,3 +182,42 @@ def test_focus_option_map_and_health_metrics_are_readable() -> None:
     assert metrics["node_count"] == 3
     assert metrics["edge_count"] == 2
     assert metrics["component_count"] == 1
+
+
+def test_shortest_path_helpers_report_found_path() -> None:
+    """Path helpers should build a readable path summary when a path exists."""
+
+    graph = build_sample_graph()
+    path_result = build_shortest_path_result(
+        graph,
+        source_node_id="sector:Technology",
+        target_node_id="topic:technology",
+    )
+    summary_frame = build_path_summary_frame(graph, path_result)
+
+    assert path_result["status"] == "ok"
+    assert path_result["path_nodes"] == [
+        "sector:Technology",
+        "stock:AAPL",
+        "topic:technology",
+    ]
+    assert summary_frame.loc[1, "value"] == 2
+
+
+def test_shortest_path_helpers_report_missing_path() -> None:
+    """Path helpers should stay readable when no path can be found."""
+
+    graph = build_sample_graph()
+    graph.add_node("topic:isolated", node_type="topic", label="isolated")
+
+    path_result = build_shortest_path_result(
+        graph,
+        source_node_id="stock:AAPL",
+        target_node_id="topic:isolated",
+    )
+    summary_frame = build_path_summary_frame(graph, path_result)
+
+    assert path_result["status"] == "no-path"
+    assert summary_frame.to_dict("records") == [
+        {"field": "status", "value": "no path"}
+    ]
