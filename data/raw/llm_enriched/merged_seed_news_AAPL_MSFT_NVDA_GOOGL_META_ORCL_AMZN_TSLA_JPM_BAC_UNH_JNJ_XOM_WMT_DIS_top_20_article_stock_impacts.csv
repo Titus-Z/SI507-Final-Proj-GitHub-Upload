@@ -1,0 +1,24 @@
+article_id,ticker,impact_direction,impact_strength,confidence,rationale,model,enriched_at
+917a35aaa70d82a5ec26eaa2f7f7937f4ee320de,NVDA,positive,medium,0.7,Partnership with T-Mobile may drive demand for NVIDIA's AI technologies.,gpt-4o-mini,2026-04-05T21:28:05
+da8c1308e7213e7fdfa098a1df1e073f4bcfce62,BAC,uncertain,medium,0.5,"The article discusses IGIC, which is not directly related to BAC, leading to uncertain impact.",gpt-4o-mini,2026-04-05T21:28:08
+972933b3004ae3661602155396a35e9eab4cf388,JPM,uncertain,low,0.4,Neutral sentiment with no clear impact from the article.,gpt-4o-mini,2026-04-05T21:28:11
+428c514901c6ebdf761b584124c42eb199b48f26,JPM,negative,medium,0.6,"As a major player in financial services, JPM may face negative sentiment due to the risks associated with similar products.",gpt-4o-mini,2026-04-05T21:28:15
+db32e7dd57e02df46ce69fb015e4c3830ac9165a,UNH,positive,medium,0.8,Earnings beat expectations and institutional ownership increases confidence in UNH's stock performance.,gpt-4o-mini,2026-04-05T21:28:20
+bd11ab0db6ad3f3195010689d25ce321ffd491b2,AMZN,positive,medium,0.72,Increased competition in home goods may benefit Amazon's sales.,gpt-4o-mini,2026-04-05T21:28:24
+bd11ab0db6ad3f3195010689d25ce321ffd491b2,WMT,positive,medium,0.62,Walmart may see increased traffic due to competitive pricing in home categories.,gpt-4o-mini,2026-04-05T21:28:24
+ee645ff80d2f54ad0810a6efdbcee1b653c57873,JNJ,uncertain,low,0.5,Mixed analyst sentiment and competitive pressures from Pfizer.,gpt-4o-mini,2026-04-05T21:28:27
+f7ed9254ab2126516f24337a893cd5852562d8a5,WMT,uncertain,medium,0.5,"Walmart's potential share purchase could affect its capital structure, but the overall impact is unclear.",gpt-4o-mini,2026-04-05T21:28:31
+e4575a035b36bb119b6d77f60d5840d130b56725,DIS,uncertain,low,0.3,"Potential competition in sports streaming, but unclear impact.",gpt-4o-mini,2026-04-05T21:28:37
+e4575a035b36bb119b6d77f60d5840d130b56725,AMZN,uncertain,low,0.3,"Possible competitive implications in streaming, but not definitive.",gpt-4o-mini,2026-04-05T21:28:37
+5fcf2c5944529b23235cb325efd7ce1956fe166d,JNJ,positive,medium,0.6,"The appointment of a new Chief Medical Officer with experience at JNJ may enhance regulatory filing processes, benefiting JNJ's interests.",gpt-4o-mini,2026-04-05T21:28:41
+b628d84511f86a8276dd197d6b3e74195b70e367,JPM,uncertain,medium,0.5,"The downgrade of FCX may indirectly affect JPM due to its exposure to commodities, but the impact is not clearly defined.",gpt-4o-mini,2026-04-05T21:28:46
+be760cf90038680195751599cf0d48759595f207,TSLA,positive,medium,0.75,New hub supports Tesla's operational growth and market presence.,gpt-4o-mini,2026-04-05T21:28:49
+0161ad9745973a500b248f7c425bfb8746aeb185,XOM,uncertain,low,0.4,The outlook does not provide clear implications for ExxonMobil's performance.,gpt-4o-mini,2026-04-05T21:28:53
+7f1ca8c75aceeefdda71fd9311acb505a6acb6e0,DIS,positive,medium,0.7,Analysts are optimistic about Disney's adaptability and growth potential.,gpt-4o-mini,2026-04-05T21:28:59
+c6f27bc2266256d5500c7701da3d2333062e5dfa,NVDA,uncertain,low,0.5,"While AMD's growth may influence the AI sector, NVDA's direct impact is unclear.",gpt-4o-mini,2026-04-05T21:29:03
+af571c88291763fd53304344735373cabb6e1e57,NVDA,uncertain,low,0.5,No clear impact from AMD's developments on NVDA.,gpt-4o-mini,2026-04-05T21:29:05
+ba4eeabfde2770366d12cd6df925b0bd117f5bab,JPM,negative,medium,0.6,Negative sentiment from BSX's performance may affect investor confidence in related financial services.,gpt-4o-mini,2026-04-05T21:29:11
+ba4eeabfde2770366d12cd6df925b0bd117f5bab,UNH,uncertain,low,0.5,Mixed signals from BSX's performance do not provide a clear impact on UNH.,gpt-4o-mini,2026-04-05T21:29:11
+d1c85969f0eb60376fbe77d1c9ba8bbab1a6415c,NVDA,negative,medium,0.6,Broader market caution and competitive pressures may affect NVDA's performance.,gpt-4o-mini,2026-04-05T21:29:13
+298b8a0f36f7c2ba027023ad8acec80ef7225e76,JPM,uncertain,low,0.5,"The article discusses FBRT, which is not directly linked to JPM, leading to uncertain impact.",gpt-4o-mini,2026-04-05T21:29:17
+7575240c30aec3398daf7d06c7bd2238fd1286ff,JPM,positive,medium,0.7,Positive analyst ratings and outlooks may enhance investor confidence in JPM's financial services related to IHG.,gpt-4o-mini,2026-04-05T21:29:20

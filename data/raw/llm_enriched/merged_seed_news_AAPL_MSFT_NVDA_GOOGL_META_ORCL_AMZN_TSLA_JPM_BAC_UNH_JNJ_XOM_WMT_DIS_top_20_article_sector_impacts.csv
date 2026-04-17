@@ -1,0 +1,12 @@
+article_id,sector,impact_direction,impact_strength,confidence,rationale,model,enriched_at
+917a35aaa70d82a5ec26eaa2f7f7937f4ee320de,Communication Services,positive,medium,0.7,T-Mobile's pivot into education and AI could enhance its service offerings and customer base.,gpt-4o-mini,2026-04-05T21:28:05
+917a35aaa70d82a5ec26eaa2f7f7937f4ee320de,Technology,positive,medium,0.7,"Collaboration with NVIDIA indicates a strong alignment with tech advancements, potentially boosting T-Mobile's market position.",gpt-4o-mini,2026-04-05T21:28:05
+428c514901c6ebdf761b584124c42eb199b48f26,Financial Services,negative,medium,0.6,The issuance of principal-at-risk notes may deter investors due to potential losses.,gpt-4o-mini,2026-04-05T21:28:15
+db32e7dd57e02df46ce69fb015e4c3830ac9165a,Healthcare,positive,medium,0.8,Strong quarterly earnings and a 'Moderate Buy' consensus rating indicate positive sentiment in the healthcare sector.,gpt-4o-mini,2026-04-05T21:28:20
+ee645ff80d2f54ad0810a6efdbcee1b653c57873,Healthcare,positive,medium,0.7,Positive retail interest and earnings beat.,gpt-4o-mini,2026-04-05T21:28:27
+5fcf2c5944529b23235cb325efd7ce1956fe166d,Healthcare,positive,medium,0.7,"Completion of trial enrollment and upcoming results could positively influence the healthcare sector, particularly in CAR-T therapies.",gpt-4o-mini,2026-04-05T21:28:41
+be760cf90038680195751599cf0d48759595f207,Consumer Cyclical,positive,medium,0.75,Expansion of Tesla's service indicates growth potential in the ride-hailing market.,gpt-4o-mini,2026-04-05T21:28:49
+0161ad9745973a500b248f7c425bfb8746aeb185,Energy,mixed,medium,0.6,"ConocoPhillips' strategy may influence market dynamics in the Energy sector, but its conservative approach contrasts with aggressive competitors.",gpt-4o-mini,2026-04-05T21:28:53
+7f1ca8c75aceeefdda71fd9311acb505a6acb6e0,Consumer Cyclical,positive,medium,0.7,Disney's strategic pivots and core strengths suggest potential growth in the consumer cyclical sector.,gpt-4o-mini,2026-04-05T21:28:59
+c6f27bc2266256d5500c7701da3d2333062e5dfa,Technology,positive,medium,0.7,The launch of new AI products is likely to enhance AMD's growth prospects.,gpt-4o-mini,2026-04-05T21:29:03
+af571c88291763fd53304344735373cabb6e1e57,Technology,positive,medium,0.7,Upcoming product launches could drive growth.,gpt-4o-mini,2026-04-05T21:29:05

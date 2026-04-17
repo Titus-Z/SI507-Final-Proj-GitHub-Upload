@@ -1,0 +1,7 @@
+{
+  "ticker": "GS",
+  "company_name": "The Goldman Sachs Group, Inc.",
+  "sector": "Financial Services",
+  "industry": "Capital Markets",
+  "source": "yfinance"
+}

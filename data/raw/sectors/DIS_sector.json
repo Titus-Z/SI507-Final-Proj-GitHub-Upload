@@ -1,0 +1,7 @@
+{
+  "ticker": "DIS",
+  "company_name": "The Walt Disney Company",
+  "sector": "Communication Services",
+  "industry": "Entertainment",
+  "source": "yfinance"
+}

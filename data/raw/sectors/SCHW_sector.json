@@ -1,0 +1,7 @@
+{
+  "ticker": "SCHW",
+  "company_name": "The Charles Schwab Corporation",
+  "sector": "Financial Services",
+  "industry": "Capital Markets",
+  "source": "yfinance"
+}

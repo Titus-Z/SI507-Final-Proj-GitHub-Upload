@@ -1,0 +1,7 @@
+{
+  "ticker": "MCD",
+  "company_name": "McDonald's Corporation",
+  "sector": "Consumer Cyclical",
+  "industry": "Restaurants",
+  "source": "yfinance"
+}

@@ -1,0 +1,7 @@
+{
+  "ticker": "ORCL",
+  "company_name": "Oracle Corporation",
+  "sector": "Technology",
+  "industry": "Software - Infrastructure",
+  "source": "yfinance"
+}

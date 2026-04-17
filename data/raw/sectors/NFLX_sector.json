@@ -1,0 +1,7 @@
+{
+  "ticker": "NFLX",
+  "company_name": "Netflix, Inc.",
+  "sector": "Communication Services",
+  "industry": "Entertainment",
+  "source": "yfinance"
+}

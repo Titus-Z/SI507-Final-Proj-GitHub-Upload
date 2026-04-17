@@ -1,0 +1,7 @@
+{
+  "ticker": "BLK",
+  "company_name": "BlackRock, Inc.",
+  "sector": "Financial Services",
+  "industry": "Asset Management",
+  "source": "yfinance"
+}
