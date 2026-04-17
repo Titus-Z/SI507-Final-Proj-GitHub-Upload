@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import os
 from pathlib import Path
 
-DEFAULT_ALPHA_VANTAGE_API_KEY = "UDRHJ58137BQBIER"
+DEFAULT_ALPHA_VANTAGE_API_KEY = None
 
 
 @dataclass(frozen=True)
@@ -42,10 +42,7 @@ def load_config() -> AppConfig:
     data_dir = Path(os.getenv("MARKET_EXPLORER_DATA_DIR", "data")).expanduser()
 
     return AppConfig(
-        alpha_vantage_api_key=os.getenv(
-            "ALPHA_VANTAGE_API_KEY",
-            DEFAULT_ALPHA_VANTAGE_API_KEY,
-        ),
+        alpha_vantage_api_key=os.getenv("ALPHA_VANTAGE_API_KEY"),
         openai_api_key=os.getenv("OPENAI_API_KEY"),
         alpha_vantage_base_url="https://www.alphavantage.co/query",
         openai_base_url=os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1"),
