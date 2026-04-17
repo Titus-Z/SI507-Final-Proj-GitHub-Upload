@@ -5,7 +5,10 @@ from __future__ import annotations
 import networkx as nx
 
 from interactive_graph_app import (
+    apply_focus_filter,
     build_graph_control_frame,
+    build_focus_node_option_map,
+    build_graph_health_metrics,
     build_graph_type_frame,
     build_edge_title,
     build_node_title,
@@ -128,3 +131,35 @@ def test_build_graph_control_frame_formats_values_for_display() -> None:
         {"setting": "Physics controls shown", "value": "Yes"},
         {"setting": "Graph height", "value": "760px"},
     ]
+
+
+def test_apply_focus_filter_keeps_local_neighborhood() -> None:
+    """Focus filtering should reduce the graph to one node neighborhood."""
+
+    graph = build_sample_graph()
+
+    focused = apply_focus_filter(
+        graph,
+        focus_node_id="stock:AAPL",
+        max_distance=1,
+    )
+
+    assert set(focused.nodes()) == {
+        "stock:AAPL",
+        "sector:Technology",
+        "topic:technology",
+    }
+
+
+def test_focus_option_map_and_health_metrics_are_readable() -> None:
+    """Explorer helpers should expose readable labels and stable metrics."""
+
+    graph = build_sample_graph()
+
+    option_map = build_focus_node_option_map(graph)
+    metrics = build_graph_health_metrics(graph)
+
+    assert "stock | AAPL | degree 2" in option_map
+    assert metrics["node_count"] == 3
+    assert metrics["edge_count"] == 2
+    assert metrics["component_count"] == 1

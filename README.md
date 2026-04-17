@@ -15,6 +15,9 @@ It is organized for two use cases:
 - unified Streamlit site with:
   - analysis dashboard
   - interactive graph explorer
+    - explorer presets
+    - focus-node neighborhood view
+    - node inspector and structure panels
 - LLM-based news impact assessment
 - tests and study documents
 

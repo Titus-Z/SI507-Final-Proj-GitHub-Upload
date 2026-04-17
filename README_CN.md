@@ -96,6 +96,9 @@ streamlit run query_app.py
   - 新新闻分析
 - `Interactive Graph`
   - 可拖拽网络图
+  - preset 视图
+  - focus node 邻域浏览
+  - inspector 详情面板
   - 过滤节点类型和边类型
   - 查看图结构和桥接节点
 
