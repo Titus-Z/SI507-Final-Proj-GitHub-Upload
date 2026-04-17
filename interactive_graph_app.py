@@ -27,26 +27,141 @@ except ImportError:  # pragma: no cover - handled at runtime
     Network = None
 
 
-NODE_COLORS = {
-    "stock": "#2F6BFF",
-    "sector": "#1E9E63",
-    "topic": "#F08C2E",
-    "unknown": "#7F8C8D",
+STYLE_PROFILES = {
+    "AWS + Bloom": {
+        "hero_title": "Graph Explorer Workbench",
+        "hero_body": (
+            "A product-style graph workbench inspired by AWS Graph Explorer "
+            "and Neo4j Bloom: clearer panes, stable semantic colors, and an "
+            "investigation-first layout."
+        ),
+        "page_radial_left": "rgba(37, 99, 235, 0.12)",
+        "page_radial_right": "rgba(15, 118, 110, 0.10)",
+        "page_base_start": "#F7F9FC",
+        "page_base_end": "#EEF2F7",
+        "sidebar_start": "#111827",
+        "sidebar_end": "#0F172A",
+        "metric_bg": "rgba(255, 255, 255, 0.90)",
+        "metric_border": "rgba(148, 163, 184, 0.18)",
+        "hero_start": "rgba(15, 23, 42, 0.96)",
+        "hero_end": "rgba(37, 99, 235, 0.94)",
+        "card_bg": "rgba(255, 255, 255, 0.92)",
+        "card_border": "rgba(148, 163, 184, 0.16)",
+        "legend_bg": "rgba(255, 255, 255, 0.94)",
+        "network_bg": "#F8FBFF",
+        "network_font": "#111111",
+        "canvas_caption": (
+            "Drag nodes, zoom, and use the built-in graph menus. This style is "
+            "meant to feel like a graph investigation product, not a loose demo."
+        ),
+        "profile_summary": (
+            "Best when you want the app to read like a polished graph analytics "
+            "tool with clean panes and a structured investigation flow."
+        ),
+        "node_colors": {
+            "stock": "#2F6BFF",
+            "sector": "#14906B",
+            "topic": "#F08C2E",
+            "unknown": "#7F8C8D",
+        },
+        "edge_colors": {
+            "stock_stock": "#2563EB",
+            "stock_sector": "#0F766E",
+            "stock_topic": "#D97706",
+            "sector_sector": "#9333EA",
+            "unknown": "#B0B8C5",
+        },
+        "legend_accents": ["#2563EB", "#0F766E", "#D97706"],
+    },
+    "AWS + Sigma": {
+        "hero_title": "Modern Network Canvas",
+        "hero_body": (
+            "A cleaner, more technical graph canvas inspired by Sigma-style "
+            "WebGL exploration layered into a productized explorer shell."
+        ),
+        "page_radial_left": "rgba(14, 165, 233, 0.12)",
+        "page_radial_right": "rgba(59, 130, 246, 0.10)",
+        "page_base_start": "#F8FBFF",
+        "page_base_end": "#EEF5FF",
+        "sidebar_start": "#0B1120",
+        "sidebar_end": "#111827",
+        "metric_bg": "rgba(255, 255, 255, 0.95)",
+        "metric_border": "rgba(96, 165, 250, 0.18)",
+        "hero_start": "rgba(2, 6, 23, 0.98)",
+        "hero_end": "rgba(37, 99, 235, 0.92)",
+        "card_bg": "rgba(255, 255, 255, 0.96)",
+        "card_border": "rgba(148, 163, 184, 0.14)",
+        "legend_bg": "rgba(255, 255, 255, 0.98)",
+        "network_bg": "#FFFFFF",
+        "network_font": "#0F172A",
+        "canvas_caption": (
+            "This style favors a cleaner canvas, stronger contrast, and a "
+            "lighter frame around the network for a more modern graph-browser feel."
+        ),
+        "profile_summary": (
+            "Best when you want the graph itself to dominate, with less visual "
+            "weight in the surrounding panels."
+        ),
+        "node_colors": {
+            "stock": "#2563EB",
+            "sector": "#0EA5E9",
+            "topic": "#7C3AED",
+            "unknown": "#94A3B8",
+        },
+        "edge_colors": {
+            "stock_stock": "#1D4ED8",
+            "stock_sector": "#0F766E",
+            "stock_topic": "#8B5CF6",
+            "sector_sector": "#0284C7",
+            "unknown": "#CBD5E1",
+        },
+        "legend_accents": ["#1D4ED8", "#0EA5E9", "#7C3AED"],
+    },
+    "Kumu + Bloom": {
+        "hero_title": "Systems Map Explorer",
+        "hero_body": (
+            "A softer systems-map treatment inspired by Kumu, while keeping "
+            "Bloom-like semantic clarity for graph exploration."
+        ),
+        "page_radial_left": "rgba(16, 185, 129, 0.10)",
+        "page_radial_right": "rgba(245, 158, 11, 0.08)",
+        "page_base_start": "#FBFBF7",
+        "page_base_end": "#F3F2EA",
+        "sidebar_start": "#1F2937",
+        "sidebar_end": "#111827",
+        "metric_bg": "rgba(255, 255, 255, 0.92)",
+        "metric_border": "rgba(163, 163, 163, 0.18)",
+        "hero_start": "rgba(20, 83, 45, 0.94)",
+        "hero_end": "rgba(180, 83, 9, 0.88)",
+        "card_bg": "rgba(255, 255, 250, 0.92)",
+        "card_border": "rgba(161, 161, 170, 0.16)",
+        "legend_bg": "rgba(255, 255, 252, 0.96)",
+        "network_bg": "#FCFCF8",
+        "network_font": "#1F2937",
+        "canvas_caption": (
+            "This style softens the product shell and makes the graph read more "
+            "like a relationship map or systems map."
+        ),
+        "profile_summary": (
+            "Best when you want the project to feel more like a network map of "
+            "market relationships than a technical graph IDE."
+        ),
+        "node_colors": {
+            "stock": "#4F46E5",
+            "sector": "#15803D",
+            "topic": "#C2410C",
+            "unknown": "#71717A",
+        },
+        "edge_colors": {
+            "stock_stock": "#6366F1",
+            "stock_sector": "#15803D",
+            "stock_topic": "#C2410C",
+            "sector_sector": "#A16207",
+            "unknown": "#A1A1AA",
+        },
+        "legend_accents": ["#4F46E5", "#15803D", "#C2410C"],
+    },
 }
-EDGE_COLORS = {
-    "stock_stock": "#2563EB",
-    "stock_sector": "#0F766E",
-    "stock_topic": "#D97706",
-    "sector_sector": "#9333EA",
-    "unknown": "#B0B8C5",
-}
-
-GRAPH_CARD_COLORS = [
-    "#2563EB",
-    "#0F766E",
-    "#D97706",
-    "#9333EA",
-]
 VISUAL_PRESETS = {
     "Market Structure": {
         "description": (
@@ -82,11 +197,32 @@ VISUAL_PRESETS = {
     },
 }
 
+DEFAULT_STYLE_PROFILE = "AWS + Bloom"
 
-def node_color(node_type: str) -> str:
+
+def build_style_profile_options() -> list[str]:
+    """Return the supported graph visual styles in display order."""
+
+    return list(STYLE_PROFILES)
+
+
+def get_style_profile(profile_name: str | None) -> dict[str, Any]:
+    """Resolve one style profile, falling back to the default option."""
+
+    if profile_name and profile_name in STYLE_PROFILES:
+        return STYLE_PROFILES[profile_name]
+    return STYLE_PROFILES[DEFAULT_STYLE_PROFILE]
+
+
+def node_color(
+    node_type: str,
+    style_profile: dict[str, Any] | None = None,
+) -> str:
     """Return a stable color for one node type."""
 
-    return NODE_COLORS.get(node_type, NODE_COLORS["unknown"])
+    resolved_profile = style_profile or get_style_profile(None)
+    node_colors = resolved_profile["node_colors"]
+    return node_colors.get(node_type, node_colors["unknown"])
 
 
 def node_size(node_data: dict[str, Any], degree: int) -> int:
@@ -119,11 +255,16 @@ def edge_width(edge_data: dict[str, Any]) -> float:
     return 1.5
 
 
-def edge_color(edge_data: dict[str, Any]) -> str:
+def edge_color(
+    edge_data: dict[str, Any],
+    style_profile: dict[str, Any] | None = None,
+) -> str:
     """Map edge type to a stable display color."""
 
+    resolved_profile = style_profile or get_style_profile(None)
+    edge_colors = resolved_profile["edge_colors"]
     edge_type = str(edge_data.get("edge_type", "unknown"))
-    return EDGE_COLORS.get(edge_type, EDGE_COLORS["unknown"])
+    return edge_colors.get(edge_type, edge_colors["unknown"])
 
 
 def build_node_title(node_id: str, node_data: dict[str, Any], degree: int) -> str:
@@ -354,6 +495,7 @@ def build_pyvis_html(
     physics_enabled: bool,
     show_physics_controls: bool,
     height_px: int,
+    style_profile: dict[str, Any],
 ) -> str:
     """Convert a NetworkX graph into draggable Pyvis HTML."""
 
@@ -370,8 +512,8 @@ def build_pyvis_html(
         neighborhood_highlight=True,
         select_menu=True,
         filter_menu=True,
-        bgcolor="#FFFFFF",
-        font_color="#111111",
+        bgcolor=style_profile["network_bg"],
+        font_color=style_profile["network_font"],
         cdn_resources="in_line",
     )
 
@@ -383,7 +525,10 @@ def build_pyvis_html(
             node_id,
             label=str(node_data.get("label") or node_id),
             title=build_node_title(node_id, node_data, degree),
-            color=node_color(str(node_data.get("node_type", "unknown"))),
+            color=node_color(
+                str(node_data.get("node_type", "unknown")),
+                style_profile=style_profile,
+            ),
             size=node_size(node_data, degree),
         )
 
@@ -394,7 +539,7 @@ def build_pyvis_html(
             title=build_edge_title(edge_data),
             value=edge_width(edge_data),
             width=edge_width(edge_data),
-            color=edge_color(edge_data),
+            color=edge_color(edge_data, style_profile=style_profile),
         )
 
     # Use the built-in physics helpers instead of overriding the full options
@@ -432,87 +577,87 @@ def counter_to_frame(counter_data) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def inject_graph_app_styles() -> None:
+def inject_graph_app_styles(style_profile: dict[str, Any]) -> None:
     """Apply a lightweight explorer theme to the draggable graph app."""
 
     if st is None:
         return
 
     st.markdown(
-        """
+        f"""
         <style>
-        .stApp {
+        .stApp {{
             background:
-                radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 24%),
-                radial-gradient(circle at top right, rgba(15, 118, 110, 0.10), transparent 26%),
-                linear-gradient(180deg, #F7F9FC 0%, #EEF2F7 100%);
-        }
-        .block-container {
+                radial-gradient(circle at top left, {style_profile["page_radial_left"]}, transparent 24%),
+                radial-gradient(circle at top right, {style_profile["page_radial_right"]}, transparent 26%),
+                linear-gradient(180deg, {style_profile["page_base_start"]} 0%, {style_profile["page_base_end"]} 100%);
+        }}
+        .block-container {{
             padding-top: 2rem;
             padding-bottom: 2rem;
             max-width: 1380px;
-        }
-        section[data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #111827 0%, #0F172A 100%);
-            border-right: 1px solid rgba(148, 163, 184, 0.18);
-        }
-        section[data-testid="stSidebar"] * {
+        }}
+        section[data-testid="stSidebar"] {{
+            background: linear-gradient(180deg, {style_profile["sidebar_start"]} 0%, {style_profile["sidebar_end"]} 100%);
+            border-right: 1px solid {style_profile["metric_border"]};
+        }}
+        section[data-testid="stSidebar"] * {{
             color: #E5EEF8;
-        }
-        div[data-testid="stMetric"] {
-            background: rgba(255, 255, 255, 0.90);
-            border: 1px solid rgba(148, 163, 184, 0.18);
+        }}
+        div[data-testid="stMetric"] {{
+            background: {style_profile["metric_bg"]};
+            border: 1px solid {style_profile["metric_border"]};
             border-radius: 18px;
             padding: 0.8rem 1rem;
             box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
-        }
-        .graph-hero {
+        }}
+        .graph-hero {{
             padding: 1.3rem 1.45rem;
             border-radius: 24px;
             color: white;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.96) 0%, rgba(37, 99, 235, 0.94) 100%);
+            background: linear-gradient(135deg, {style_profile["hero_start"]} 0%, {style_profile["hero_end"]} 100%);
             box-shadow: 0 18px 50px rgba(15, 23, 42, 0.16);
             margin-bottom: 1rem;
-        }
-        .graph-hero h2 {
+        }}
+        .graph-hero h2 {{
             margin: 0 0 0.35rem 0;
             font-size: 2rem;
-        }
-        .graph-hero p {
+        }}
+        .graph-hero p {{
             margin: 0;
             color: rgba(255, 255, 255, 0.92);
             line-height: 1.55;
-        }
-        .graph-card {
-            background: rgba(255, 255, 255, 0.92);
-            border: 1px solid rgba(148, 163, 184, 0.16);
+        }}
+        .graph-card {{
+            background: {style_profile["card_bg"]};
+            border: 1px solid {style_profile["card_border"]};
             border-radius: 18px;
             padding: 0.95rem 1rem;
             box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
-        }
-        .graph-card h3 {
+        }}
+        .graph-card h3 {{
             margin-top: 0;
             margin-bottom: 0.25rem;
             font-size: 1.05rem;
-        }
-        .legend-grid {
+        }}
+        .legend-grid {{
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 0.75rem;
-        }
-        .legend-card {
-            background: rgba(255, 255, 255, 0.94);
+        }}
+        .legend-card {{
+            background: {style_profile["legend_bg"]};
             border-radius: 16px;
             padding: 0.8rem 0.9rem;
-            border: 1px solid rgba(148, 163, 184, 0.16);
-        }
-        .legend-chip {
+            border: 1px solid {style_profile["card_border"]};
+        }}
+        .legend-chip {{
             display: inline-block;
             width: 10px;
             height: 10px;
             border-radius: 999px;
             margin-right: 0.45rem;
-        }
+        }}
         </style>
         """,
         unsafe_allow_html=True,
@@ -589,20 +734,20 @@ def build_graph_control_frame(
     return pd.DataFrame(rows)
 
 
-def render_legend_cards() -> None:
+def render_legend_cards(style_profile: dict[str, Any]) -> None:
     """Render graph legend cards without relying on one large HTML blob."""
 
     legend_columns = st.columns(3)
     for column, node_type, accent in zip(
         legend_columns,
         ["stock", "sector", "topic"],
-        GRAPH_CARD_COLORS,
+        style_profile["legend_accents"],
     ):
         with column:
             st.markdown(
                 f"""
                 <div class="legend-card" style="border-top: 4px solid {accent};">
-                    <div><span class="legend-chip" style="background:{NODE_COLORS[node_type]};"></span>{node_type}</div>
+                    <div><span class="legend-chip" style="background:{node_color(node_type, style_profile=style_profile)};"></span>{node_type}</div>
                     <div style="margin-top:0.45rem;color:#475569;font-size:0.9rem;">
                         color code for {node_type} nodes
                     </div>
@@ -620,9 +765,11 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
             "Streamlit is not installed. Run 'pip install -r requirements.txt'."
         )
 
+    selected_style_profile = get_style_profile(DEFAULT_STYLE_PROFILE)
+
     if configure_page:
         st.set_page_config(page_title="Interactive Market Graph", layout="wide")
-    inject_graph_app_styles()
+    inject_graph_app_styles(selected_style_profile)
     st.title("Interactive Market Graph Explorer")
     st.caption(
         "Graph browser built from the local project data. "
@@ -632,6 +779,18 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
 
     with st.sidebar:
         st.header("Explorer Setup")
+        style_options = build_style_profile_options()
+        style_profile_name = st.selectbox(
+            "Visual Style",
+            options=style_options,
+            index=style_options.index(DEFAULT_STYLE_PROFILE),
+            help=(
+                "Switch among three higher-end graph presentation styles: a "
+                "product explorer shell, a cleaner canvas-driven browser, or a "
+                "softer systems-map treatment."
+            ),
+        )
+        selected_style_profile = get_style_profile(style_profile_name)
         ticker_text = st.text_input(
             "Ticker Filter",
             value=",".join(DEFAULT_WEB_TICKERS),
@@ -720,6 +879,10 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
         physics_enabled = st.checkbox("Enable Physics", value=True)
         show_physics_controls = st.checkbox("Show Physics Controls", value=True)
         height_px = st.slider("Graph Height", min_value=500, max_value=1100, value=760)
+
+        st.caption(selected_style_profile["profile_summary"])
+
+    inject_graph_app_styles(selected_style_profile)
 
     if embedded:
         st.caption(
@@ -815,15 +978,15 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
     st.markdown(
         """
         <div class="graph-hero">
-            <h2>Interactive Structure Browser</h2>
+            <h2>{hero_title}</h2>
             <p>
-                This page is tuned for visual structure first. It follows the same
-                graph-building pipeline as the query dashboard, but now behaves more
-                like a graph browser: choose a preset, focus one neighborhood, inspect
-                one node, then drag the filtered network.
+                {hero_body}
             </p>
         </div>
-        """,
+        """.format(
+            hero_title=selected_style_profile["hero_title"],
+            hero_body=selected_style_profile["hero_body"],
+        ),
         unsafe_allow_html=True,
     )
 
@@ -859,14 +1022,15 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
     with overview_columns[0]:
         st.markdown(
             f"""
-            <div class="graph-card">
-                <h3>Current Explorer Mode</h3>
-                <p><strong>{visual_preset}</strong></p>
-                <p>{preset_description}</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+                <div class="graph-card">
+                    <h3>Current Explorer Mode</h3>
+                    <p><strong>{visual_preset}</strong></p>
+                    <p>{preset_description}</p>
+                    <p><strong>Style:</strong> {style_profile_name}</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
     with overview_columns[1]:
         st.markdown(
             """
@@ -876,8 +1040,9 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
                     Node color encodes node type, edge color encodes edge type,
                     and node size still scales with local prominence.
                 </p>
+                <p>{profile_summary}</p>
             </div>
-            """,
+            """.format(profile_summary=selected_style_profile["profile_summary"]),
             unsafe_allow_html=True,
         )
 
@@ -891,11 +1056,9 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
             physics_enabled=physics_enabled,
             show_physics_controls=show_physics_controls,
             height_px=height_px,
+            style_profile=selected_style_profile,
         )
-        st.caption(
-            "Drag nodes, zoom, and use the built-in graph menus. "
-            "If the network looks too dense, use Focus Node in the sidebar."
-        )
+        st.caption(selected_style_profile["canvas_caption"])
         components.html(html, height=height_px + 50, scrolling=True)
 
     with inspector_tab:
@@ -944,14 +1107,15 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
                 <div class="graph-card">
                     <h3>Legend And Controls</h3>
                     <p>
-                        This view takes cues from graph tools that emphasize filtering,
-                        focus mode, and visual encoding over a raw node dump.
+                        This view uses the selected style profile to tune the graph
+                        shell, legend accents, and overall framing around the same
+                        underlying network data.
                     </p>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
-            render_legend_cards()
+            render_legend_cards(selected_style_profile)
             st.caption("Display Controls")
             st.dataframe(
                 build_graph_control_frame(

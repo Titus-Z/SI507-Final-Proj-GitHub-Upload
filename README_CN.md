@@ -97,6 +97,10 @@ streamlit run query_app.py
 - `Interactive Graph`
   - 可拖拽网络图
   - preset 视图
+  - 三套可切换风格
+    - `AWS + Bloom`
+    - `AWS + Sigma`
+    - `Kumu + Bloom`
   - focus node 邻域浏览
   - inspector 详情面板
   - 过滤节点类型和边类型

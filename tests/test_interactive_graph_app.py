@@ -9,12 +9,15 @@ from interactive_graph_app import (
     build_graph_control_frame,
     build_focus_node_option_map,
     build_graph_health_metrics,
+    build_style_profile_options,
     build_graph_type_frame,
     build_edge_title,
     build_node_title,
     build_top_degree_frame,
     edge_width,
+    edge_color,
     filter_graph,
+    get_style_profile,
     node_color,
     node_size,
 )
@@ -83,13 +86,27 @@ def test_node_helpers_return_stable_display_values() -> None:
     assert "ticker: AAPL" in build_node_title("stock:AAPL", stock_data, degree=2)
 
 
+def test_style_profiles_are_available_and_change_visual_tokens() -> None:
+    """The graph explorer should expose the three supported style profiles."""
+
+    style_options = build_style_profile_options()
+    sigma_profile = get_style_profile("AWS + Sigma")
+    fallback_profile = get_style_profile("does-not-exist")
+
+    assert style_options == ["AWS + Bloom", "AWS + Sigma", "Kumu + Bloom"]
+    assert node_color("topic", style_profile=sigma_profile) == "#7C3AED"
+    assert fallback_profile["hero_title"] == "Graph Explorer Workbench"
+
+
 def test_edge_helpers_include_metadata() -> None:
     """Edge helpers should surface important edge fields."""
 
     graph = build_sample_graph()
     edge_data = graph.get_edge_data("stock:AAPL", "topic:technology")
+    bloom_profile = get_style_profile("AWS + Bloom")
 
     assert edge_width(edge_data) >= 1.0
+    assert edge_color(edge_data, style_profile=bloom_profile) == "#D97706"
     assert "article_count: 40" in build_edge_title(edge_data)
 
 

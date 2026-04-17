@@ -16,6 +16,10 @@ It is organized for two use cases:
   - analysis dashboard
   - interactive graph explorer
     - explorer presets
+    - switchable style profiles:
+      - AWS + Bloom
+      - AWS + Sigma
+      - Kumu + Bloom
     - focus-node neighborhood view
     - node inspector and structure panels
 - LLM-based news impact assessment
