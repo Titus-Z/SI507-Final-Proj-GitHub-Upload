@@ -1444,7 +1444,7 @@ def render_new_news_analysis_tab(analyzer: NetworkAnalyzer) -> None:
     )
 
 
-def run_app() -> None:
+def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
     """Run the Streamlit application."""
 
     if st is None:
@@ -1452,7 +1452,8 @@ def run_app() -> None:
             "Streamlit is not installed. Run 'pip install -r requirements.txt'."
         )
 
-    st.set_page_config(page_title="Market Query Explorer", layout="wide")
+    if configure_page:
+        st.set_page_config(page_title="Market Query Explorer", layout="wide")
     inject_query_app_styles()
     st.title("Market Query Explorer")
     st.caption(
@@ -1528,10 +1529,16 @@ def run_app() -> None:
                 "The core graph and LLM impact features are fully available."
             )
 
-    st.info(
-        "For the draggable network view, launch the separate site with "
-        "`streamlit run interactive_graph_app.py`."
-    )
+    if embedded:
+        st.caption(
+            "Use the sidebar workspace switch to move between the analysis dashboard "
+            "and the interactive graph explorer."
+        )
+    else:
+        st.info(
+            "For the draggable network view, launch the separate site with "
+            "`streamlit run interactive_graph_app.py`."
+        )
 
     tickers = parse_ticker_text(ticker_text)
     top_k = normalize_top_k(int(top_k_value))

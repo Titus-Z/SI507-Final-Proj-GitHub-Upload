@@ -380,7 +380,59 @@ def build_top_degree_frame(graph: nx.Graph, limit: int = 8) -> pd.DataFrame:
     )
 
 
-def run_app() -> None:
+def build_graph_control_frame(
+    remove_isolates: bool,
+    physics_enabled: bool,
+    show_physics_controls: bool,
+    height_px: int,
+) -> pd.DataFrame:
+    """Format display controls into one small user-facing table."""
+
+    rows = [
+        {
+            "setting": "Remove isolated nodes",
+            "value": "Yes" if remove_isolates else "No",
+        },
+        {
+            "setting": "Physics enabled",
+            "value": "Yes" if physics_enabled else "No",
+        },
+        {
+            "setting": "Physics controls shown",
+            "value": "Yes" if show_physics_controls else "No",
+        },
+        {
+            "setting": "Graph height",
+            "value": f"{height_px}px",
+        },
+    ]
+    return pd.DataFrame(rows)
+
+
+def render_legend_cards() -> None:
+    """Render graph legend cards without relying on one large HTML blob."""
+
+    legend_columns = st.columns(3)
+    for column, node_type, accent in zip(
+        legend_columns,
+        ["stock", "sector", "topic"],
+        GRAPH_CARD_COLORS,
+    ):
+        with column:
+            st.markdown(
+                f"""
+                <div class="legend-card" style="border-top: 4px solid {accent};">
+                    <div><span class="legend-chip" style="background:{NODE_COLORS[node_type]};"></span>{node_type}</div>
+                    <div style="margin-top:0.45rem;color:#475569;font-size:0.9rem;">
+                        color code for {node_type} nodes
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+
+def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
     """Run the interactive graph visualization app."""
 
     if st is None or components is None:
@@ -388,7 +440,8 @@ def run_app() -> None:
             "Streamlit is not installed. Run 'pip install -r requirements.txt'."
         )
 
-    st.set_page_config(page_title="Interactive Market Graph", layout="wide")
+    if configure_page:
+        st.set_page_config(page_title="Interactive Market Graph", layout="wide")
     inject_graph_app_styles()
     st.title("Interactive Market Graph Explorer")
     st.caption(
@@ -454,10 +507,16 @@ def run_app() -> None:
         show_physics_controls = st.checkbox("Show Physics Controls", value=True)
         height_px = st.slider("Graph Height", min_value=500, max_value=1100, value=760)
 
-    st.info(
-        "For structured stock / sector / path queries, use the separate site with "
-        "`streamlit run query_app.py`."
-    )
+    if embedded:
+        st.caption(
+            "Use the sidebar workspace switch to return to the analysis dashboard "
+            "for stock, sector, path, and LLM impact queries."
+        )
+    else:
+        st.info(
+            "For structured stock / sector / path queries, use the separate site with "
+            "`streamlit run query_app.py`."
+        )
 
     tickers = parse_ticker_text(ticker_text)
     top_k = normalize_top_k(int(top_k_value))
@@ -557,28 +616,17 @@ def run_app() -> None:
             """,
             unsafe_allow_html=True,
         )
-        legend_html = ['<div class="legend-grid">']
-        for index, node_type in enumerate(["stock", "sector", "topic"]):
-            legend_html.append(
-                f"""
-                <div class="legend-card" style="border-top: 4px solid {GRAPH_CARD_COLORS[index]};">
-                    <div><span class="legend-chip" style="background:{NODE_COLORS[node_type]};"></span>{node_type}</div>
-                    <div style="margin-top:0.45rem;color:#475569;font-size:0.9rem;">
-                        color code for {node_type} nodes
-                    </div>
-                </div>
-                """
-            )
-        legend_html.append("</div>")
-        st.markdown("".join(legend_html), unsafe_allow_html=True)
+        render_legend_cards()
         st.caption("Display Controls")
-        st.write(
-            {
-                "remove_isolates": remove_isolates,
-                "physics_enabled": physics_enabled,
-                "show_physics_controls": show_physics_controls,
-                "height_px": height_px,
-            }
+        st.dataframe(
+            build_graph_control_frame(
+                remove_isolates=remove_isolates,
+                physics_enabled=physics_enabled,
+                show_physics_controls=show_physics_controls,
+                height_px=height_px,
+            ),
+            use_container_width=True,
+            hide_index=True,
         )
 
     if filtered_graph.number_of_nodes() == 0:

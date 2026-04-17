@@ -1,6 +1,6 @@
 # Streamlit Deployment Notes
 
-This folder is the GitHub upload version for the course query app.
+This folder is the GitHub upload version for the course project.
 
 ## Recommended Streamlit deployment target
 
@@ -30,9 +30,13 @@ If you do not add this secret, the main query app still works. Only the new-news
 
 ## What is included
 
-- Query Streamlit app
-- Interactive graph app
+- Unified Streamlit entrypoint (`query_app.py`)
+- Query dashboard
+- Interactive graph explorer
+- CLI files
 - Core graph-analysis modules
+- tests
+- study docs
 - Local data snapshot:
   - 50 stock price tables
   - 50 sector metadata files
@@ -41,9 +45,6 @@ If you do not add this secret, the main query app still works. Only the new-news
 
 ## What is intentionally excluded
 
-- tests
-- study docs
 - slides
 - temporary files
 - optional semantic retrieval modules
-
