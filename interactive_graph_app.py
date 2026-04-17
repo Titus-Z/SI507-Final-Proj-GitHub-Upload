@@ -405,10 +405,16 @@ def build_pyvis_html(
     network.options.interaction.navigationButtons = True
     network.options.interaction.keyboard = True
     network.options.edges.smooth = False
-    network.options.nodes.borderWidth = 1
-    network.options.nodes.shadow = True
-    network.options.edges.selectionWidth = 2
-    network.options.edges.hoverWidth = 1.2
+    # Some Streamlit Cloud / pyvis combinations expose parts of the options
+    # tree as plain dict-like objects rather than attribute containers. Keep
+    # the graph functional there instead of crashing on purely visual extras.
+    try:
+        network.options.nodes.borderWidth = 1
+        network.options.nodes.shadow = True
+        network.options.edges.selectionWidth = 2
+        network.options.edges.hoverWidth = 1.2
+    except AttributeError:
+        pass
 
     if show_physics_controls:
         network.show_buttons(filter_=["physics"])
