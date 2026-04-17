@@ -416,24 +416,27 @@ def render_snapshot_cards(frame: pd.DataFrame) -> None:
         st.info("No sector snapshot is available for the current graph.")
         return
 
-    card_html: list[str] = ['<div class="snapshot-grid">']
-    for index, row in frame.head(6).iterrows():
-        accent = APP_ACCENT_COLORS[index % len(APP_ACCENT_COLORS)]
-        card_html.append(
-            f"""
-            <div class="snapshot-card" style="border-top: 4px solid {accent};">
-                <div class="snapshot-label">Sector</div>
-                <div class="snapshot-value">{row['sector']}</div>
-                <div class="snapshot-meta">
-                    stocks: {int(row['stock_count'])}<br>
-                    graph degree: {int(row['graph_degree'])}<br>
-                    linked sectors: {int(row['connected_sectors'])}
-                </div>
-            </div>
-            """
-        )
-    card_html.append("</div>")
-    st.markdown("".join(card_html), unsafe_allow_html=True)
+    rows = list(frame.head(6).iterrows())
+    for start_index in range(0, len(rows), 3):
+        visible_rows = rows[start_index : start_index + 3]
+        columns = st.columns(len(visible_rows))
+        for column, (index, row) in zip(columns, visible_rows):
+            accent = APP_ACCENT_COLORS[index % len(APP_ACCENT_COLORS)]
+            with column:
+                st.markdown(
+                    f"""
+                    <div class="snapshot-card" style="border-top: 4px solid {accent};">
+                        <div class="snapshot-label">Sector</div>
+                        <div class="snapshot-value">{row['sector']}</div>
+                        <div class="snapshot-meta">
+                            stocks: {int(row['stock_count'])}<br>
+                            graph degree: {int(row['graph_degree'])}<br>
+                            linked sectors: {int(row['connected_sectors'])}
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
 
 def render_market_overview(
