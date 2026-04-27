@@ -40,7 +40,7 @@ The repository already includes enough cached data to run the main project:
 
 ## Quick start
 
-Install dependencies:
+From the project folder, install dependencies:
 
 ```bash
 pip install -r requirements.txt
@@ -56,6 +56,19 @@ Run the web app:
 
 ```bash
 streamlit run query_app.py
+```
+
+Verify the project:
+
+```bash
+python -m compileall -q .
+pytest -q
+```
+
+Expected test result:
+
+```text
+72 passed
 ```
 
 ## Streamlit Cloud
