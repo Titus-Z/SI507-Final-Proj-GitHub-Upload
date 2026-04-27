@@ -14,7 +14,6 @@ If you are reviewing the project, start here:
 1. `SUBMISSION_SUMMARY.md`
 2. `DESIGN_DECISIONS_AND_COMPARISONS.md`
 3. this `README.md`
-4. `study_docs/README.md`
 
 Those files explain the project goal, graph design, interaction modes, design
 decisions, comparisons, and how to run the system.
@@ -28,7 +27,7 @@ decisions, comparisons, and how to run the system.
 - graph explorer presets, style profiles, search, shortest-path highlight, and inspector panels
 - LLM-based news impact assessment
 - explicit design-decision and comparison report
-- tests and study documents
+- pytest test suite
 
 ## Local data snapshot
 
@@ -36,8 +35,7 @@ The repository already includes enough cached data to run the main project:
 
 - 50 stock price tables
 - 50 sector metadata files
-- 50 single-ticker news JSON files
-- 41,913 deduplicated news articles in `data/raw/news/merged_seed_news.json`
+- one merged news JSON file with 41,913 deduplicated articles in `data/raw/news/merged_seed_news.json`
 - one cached LLM impact run for the `News Impact` tab
 
 ## Quick start
@@ -73,20 +71,6 @@ Optional secret for the `New News Analysis` feature:
 ```toml
 OPENAI_API_KEY = "your_openai_api_key"
 ```
-
-## Study path
-
-Start with:
-
-- `SUBMISSION_SUMMARY.md`
-- `DESIGN_DECISIONS_AND_COMPARISONS.md`
-- `study_docs/README.md`
-- `study_docs/01_项目全景与最终目标.md`
-- `study_docs/02_数据源与本地数据快照.md`
-- `study_docs/04_图是怎么构建出来的.md`
-- `study_docs/11_设计决策与方案比较.md`
-
-Then read the rest of `study_docs/`.
 
 ## Note
 
