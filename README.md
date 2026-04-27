@@ -25,6 +25,7 @@ It is organized for two use cases:
     - focus-node neighborhood view
     - node inspector and structure panels
 - LLM-based news impact assessment
+- explicit design-decision and comparison report
 - tests and study documents
 
 ## Quick start
@@ -63,7 +64,14 @@ OPENAI_API_KEY = "your_openai_api_key"
 
 ## Study path
 
-Read the files in `study_docs/` from `01` to `10`.
+Start with:
+
+- `study_docs/01_项目全景与最终目标.md`
+- `study_docs/02_数据源与本地数据快照.md`
+- `study_docs/04_图是怎么构建出来的.md`
+- `study_docs/11_设计决策与方案比较.md`
+
+Then read the rest of `study_docs/`.
 
 ## Note
 

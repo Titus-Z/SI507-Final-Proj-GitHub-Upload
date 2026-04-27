@@ -55,6 +55,8 @@
   - 新新闻影响评估
 - `news_graph_augmenter.py`
   - 新新闻接回图结构
+- `DESIGN_DECISIONS_AND_COMPARISONS.md`
+  - 面向课程评分标准的设计决策与对比实验总结
 - `tests/`
   - 核心测试
 - `study_docs/`
@@ -141,7 +143,8 @@ OPENAI_API_KEY = "你的_openai_api_key"
 1. `study_docs/01_项目全景与最终目标.md`
 2. `study_docs/02_数据源与本地数据快照.md`
 3. `study_docs/04_图是怎么构建出来的.md`
-4. `study_docs/05_图分析层到底在回答什么问题.md`
+4. `study_docs/11_设计决策与方案比较.md`
+5. `study_docs/05_图分析层到底在回答什么问题.md`
 
 然后实际运行：
 
@@ -156,6 +159,7 @@ streamlit run query_app.py
 - `study_docs/06_交互层为什么分成CLI和网页.md`
 - `study_docs/07_LLM新闻影响分析层.md`
 - `study_docs/08_测试_验证与可信度.md`
+- `DESIGN_DECISIONS_AND_COMPARISONS.md`
 
 ## 一句话总结
 
