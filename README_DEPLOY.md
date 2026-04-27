@@ -47,4 +47,4 @@ If you do not add this secret, the main query app still works. Only the new-news
 
 - slides
 - temporary files
-- optional semantic retrieval modules
+- experimental resume-only variants

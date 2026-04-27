@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 from typing import Any, Sequence
 
-import numpy as np
 import pandas as pd
 
 from config import AppConfig, load_config
@@ -130,69 +129,6 @@ class LocalDataStore:
             run_stems.append(file_path.name.replace("_article_llm_summary.csv", ""))
 
         return sorted(run_stems, reverse=True)
-
-    def list_embedding_runs(self) -> list[str]:
-        """List available article embedding run stems from local raw-data."""
-
-        embedding_dir = self.config.raw_data_dir / "embeddings"
-        if not embedding_dir.exists():
-            return []
-
-        run_stems: list[str] = []
-        for file_path in sorted(embedding_dir.glob("*_metadata.csv")):
-            run_stem = file_path.name.replace("_metadata.csv", "")
-            vectors_path = embedding_dir / f"{run_stem}_vectors.npy"
-            if vectors_path.exists():
-                run_stems.append(run_stem)
-
-        return sorted(run_stems, reverse=True)
-
-    def load_article_embedding_bundle(self, file_stem: str) -> dict[str, Any]:
-        """Load one saved article embedding metadata/vector bundle."""
-
-        embedding_dir = self.config.raw_data_dir / "embeddings"
-        if not embedding_dir.exists():
-            raise LocalDataStoreError(
-                f"Embedding directory not found: {embedding_dir}. "
-                "Run article_embeddings.py first."
-            )
-
-        metadata_path = embedding_dir / f"{file_stem}_metadata.csv"
-        vectors_path = embedding_dir / f"{file_stem}_vectors.npy"
-
-        if not metadata_path.exists():
-            raise LocalDataStoreError(
-                f"Embedding metadata file not found: {metadata_path}. "
-                "Choose an existing run stem from data/raw/embeddings/."
-            )
-        if not vectors_path.exists():
-            raise LocalDataStoreError(
-                f"Embedding vector file not found: {vectors_path}. "
-                "Choose an existing run stem from data/raw/embeddings/."
-            )
-
-        metadata = pd.read_csv(metadata_path)
-        if "published_at" in metadata.columns:
-            metadata["published_at"] = pd.to_datetime(
-                metadata["published_at"],
-                errors="coerce",
-            )
-        if "embedded_at" in metadata.columns:
-            metadata["embedded_at"] = pd.to_datetime(
-                metadata["embedded_at"],
-                errors="coerce",
-            )
-
-        vectors = np.load(vectors_path)
-        if len(metadata) != len(vectors):
-            raise LocalDataStoreError(
-                "Embedding metadata row count does not match vector row count."
-            )
-
-        return {
-            "metadata": metadata,
-            "vectors": vectors,
-        }
 
     def load_llm_impact_tables(self, file_stem: str) -> dict[str, pd.DataFrame]:
         """Load one set of cached LLM impact CSV tables."""

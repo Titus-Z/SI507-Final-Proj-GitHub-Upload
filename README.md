@@ -7,26 +7,38 @@ It is organized for two use cases:
 - course submission
 - Streamlit Cloud deployment
 
+## Recommended grading path
+
+If you are reviewing the project, start here:
+
+1. `SUBMISSION_SUMMARY.md`
+2. `DESIGN_DECISIONS_AND_COMPARISONS.md`
+3. this `README.md`
+4. `study_docs/README.md`
+
+Those files explain the project goal, graph design, interaction modes, design
+decisions, comparisons, and how to run the system.
+
 ## Main features
 
 - real market data from local snapshots
 - graph-based analysis with `stock`, `sector`, and `topic` nodes
 - CLI workflow
-- unified Streamlit site with:
-  - analysis dashboard
-  - interactive graph explorer
-    - explorer presets
-    - switchable style profiles:
-      - AWS + Bloom
-      - AWS + Sigma
-      - Kumu + Bloom
-    - node search and highlight
-    - shortest-path highlight
-    - focus-node neighborhood view
-    - node inspector and structure panels
+- unified Streamlit site with analysis dashboard and interactive graph explorer
+- graph explorer presets, style profiles, search, shortest-path highlight, and inspector panels
 - LLM-based news impact assessment
 - explicit design-decision and comparison report
 - tests and study documents
+
+## Local data snapshot
+
+The repository already includes enough cached data to run the main project:
+
+- 50 stock price tables
+- 50 sector metadata files
+- 50 single-ticker news JSON files
+- 41,913 deduplicated news articles in `data/raw/news/merged_seed_news.json`
+- one cached LLM impact run for the `News Impact` tab
 
 ## Quick start
 
@@ -66,6 +78,9 @@ OPENAI_API_KEY = "your_openai_api_key"
 
 Start with:
 
+- `SUBMISSION_SUMMARY.md`
+- `DESIGN_DECISIONS_AND_COMPARISONS.md`
+- `study_docs/README.md`
 - `study_docs/01_项目全景与最终目标.md`
 - `study_docs/02_数据源与本地数据快照.md`
 - `study_docs/04_图是怎么构建出来的.md`

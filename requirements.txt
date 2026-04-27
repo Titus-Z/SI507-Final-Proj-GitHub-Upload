@@ -1,6 +1,5 @@
 streamlit
 pandas
-numpy
 requests
 pytest
 networkx
@@ -8,4 +7,3 @@ yfinance
 openai
 pydantic
 pyvis
-scikit-learn

@@ -3,24 +3,19 @@
 from __future__ import annotations
 
 import networkx as nx
-import numpy as np
 import pandas as pd
 
 from network_analyzer import NetworkAnalyzer
 from streamlit_app import (
     add_impact_score_columns,
     build_article_impact_detail,
-    build_article_option_map,
     build_node_option_map,
     build_query_tab_labels,
     build_sector_snapshot_frame,
     build_stock_leader_frame,
     build_topic_snapshot_frame,
-    filter_embedding_bundle_by_tickers,
-    filter_semantic_candidates,
     normalize_top_k,
     parse_ticker_text,
-    semantic_features_available,
     summarize_llm_impacts,
 )
 
@@ -38,10 +33,10 @@ def test_normalize_top_k_disables_non_positive_values() -> None:
     assert normalize_top_k(3) == 3
 
 
-def test_build_query_tab_labels_excludes_optional_semantic_tab_by_default() -> None:
-    """Course query tabs should only include semantic retrieval when requested."""
+def test_build_query_tab_labels_returns_core_course_tabs() -> None:
+    """Course query tabs should stay focused on the submitted feature set."""
 
-    labels = build_query_tab_labels(include_semantic=False)
+    labels = build_query_tab_labels()
 
     assert labels == [
         "Stock Search",
@@ -52,12 +47,6 @@ def test_build_query_tab_labels_excludes_optional_semantic_tab_by_default() -> N
         "News Impact",
         "New News Analysis",
     ]
-
-
-def test_semantic_features_available_matches_optional_import_state() -> None:
-    """The helper should reflect whether the optional semantic bundle is present."""
-
-    assert semantic_features_available() is False
 
 
 def test_build_node_option_map_creates_readable_labels() -> None:
@@ -180,73 +169,6 @@ def test_build_article_impact_detail_joins_sector_and_stock_text() -> None:
 
     assert "Technology: positive / medium / conf=0.70" in detail.loc[0, "sector_impacts"]
     assert "NVDA: positive / high / conf=0.80" in detail.loc[0, "stock_impacts"]
-
-
-def test_filter_semantic_candidates_matches_title_and_summary() -> None:
-    """Keyword filtering should match either the title or the summary."""
-
-    metadata = pd.DataFrame(
-        [
-            {
-                "article_id": "a1",
-                "title": "Apple AI push",
-                "summary": "Enterprise rollout.",
-                "published_at": pd.Timestamp("2026-03-20"),
-                "source": "Reuters",
-            },
-            {
-                "article_id": "a2",
-                "title": "Cloud spending grows",
-                "summary": "Microsoft AI revenue expands.",
-                "published_at": pd.Timestamp("2026-03-19"),
-                "source": "Bloomberg",
-            },
-        ]
-    )
-
-    filtered = filter_semantic_candidates(metadata, keyword="microsoft", limit=10)
-
-    assert len(filtered) == 1
-    assert filtered.loc[0, "article_id"] == "a2"
-
-
-def test_build_article_option_map_formats_readable_labels() -> None:
-    """Semantic article controls should show readable date-source-title labels."""
-
-    metadata = pd.DataFrame(
-        [
-            {
-                "article_id": "a1",
-                "title": "Apple AI push",
-                "published_at": pd.Timestamp("2026-03-20"),
-                "source": "Reuters",
-            }
-        ]
-    )
-
-    option_map = build_article_option_map(metadata)
-
-    assert option_map["2026-03-20 | Reuters | Apple AI push"] == "a1"
-
-
-def test_filter_embedding_bundle_by_tickers_keeps_matching_rows() -> None:
-    """Ticker filtering should keep only embedding rows tied to the current scope."""
-
-    metadata = pd.DataFrame(
-        [
-            {"article_id": "a1", "tickers": "AAPL, MSFT"},
-            {"article_id": "a2", "tickers": "XOM"},
-        ]
-    )
-    vectors = np.array([[1.0, 0.0], [0.0, 1.0]])
-
-    filtered = filter_embedding_bundle_by_tickers(
-        {"metadata": metadata, "vectors": vectors},
-        tickers=["AAPL"],
-    )
-
-    assert len(filtered["metadata"]) == 1
-    assert filtered["metadata"].loc[0, "article_id"] == "a1"
 
 
 def build_market_snapshot_analyzer() -> NetworkAnalyzer:

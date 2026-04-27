@@ -20,14 +20,6 @@ from local_data_store import LocalDataStore, LocalDataStoreError
 from news_graph_augmenter import NewsGraphAugmenter
 from network_analyzer import NetworkAnalyzer, NetworkAnalyzerError
 try:
-    from semantic_retriever import SemanticNewsRetriever, SemanticRetrieverError
-except ImportError:  # pragma: no cover - optional feature in course-only bundles.
-    SemanticNewsRetriever = None
-
-    class SemanticRetrieverError(Exception):
-        """Fallback error type when semantic retrieval code is unavailable."""
-
-try:
     import streamlit as st
 except ImportError:  # pragma: no cover - handled at runtime when Streamlit is missing.
     st = None
@@ -75,12 +67,6 @@ APP_ACCENT_COLORS = [
     "#BE123C",
     "#4F46E5",
 ]
-
-
-def semantic_features_available() -> bool:
-    """Return whether optional semantic retrieval helpers are bundled locally."""
-
-    return SemanticNewsRetriever is not None
 
 
 def parse_ticker_text(raw_value: str) -> list[str] | None:
@@ -242,10 +228,10 @@ def inject_query_app_styles() -> None:
     )
 
 
-def build_query_tab_labels(include_semantic: bool) -> list[str]:
+def build_query_tab_labels() -> list[str]:
     """Build the tab list for the course query app."""
 
-    labels = [
+    return [
         "Stock Search",
         "Sector Explorer",
         "Compare Stocks",
@@ -254,9 +240,6 @@ def build_query_tab_labels(include_semantic: bool) -> list[str]:
         "News Impact",
         "New News Analysis",
     ]
-    if include_semantic:
-        labels.append("Semantic News")
-    return labels
 
 
 def counter_to_frame(counter_data) -> pd.DataFrame:
@@ -726,90 +709,6 @@ def build_node_option_map(analyzer: NetworkAnalyzer) -> dict[str, str]:
     return option_map
 
 
-def filter_embedding_bundle_by_tickers(
-    embedding_bundle: dict[str, Any],
-    tickers: list[str] | None,
-) -> dict[str, Any]:
-    """Filter an embedding bundle to articles connected to the selected tickers."""
-
-    if tickers is None:
-        return embedding_bundle
-
-    metadata = embedding_bundle["metadata"]
-    vectors = embedding_bundle["vectors"]
-    if metadata.empty or "tickers" not in metadata.columns:
-        return embedding_bundle
-
-    selected_tickers = {ticker.strip().upper() for ticker in tickers if ticker.strip()}
-    if not selected_tickers:
-        return embedding_bundle
-
-    mask = metadata["tickers"].fillna("").apply(
-        lambda value: bool(
-            selected_tickers
-            & {
-                item.strip().upper()
-                for item in str(value).split(",")
-                if item.strip()
-            }
-        )
-    )
-    filtered_metadata = metadata[mask].reset_index(drop=True)
-    filtered_vectors = vectors[mask.to_numpy()]
-    return {
-        "metadata": filtered_metadata,
-        "vectors": filtered_vectors,
-    }
-
-
-def filter_semantic_candidates(
-    metadata: pd.DataFrame,
-    keyword: str,
-    limit: int = 200,
-) -> pd.DataFrame:
-    """Filter source-article candidates for the semantic retrieval controls."""
-
-    candidates = metadata.copy()
-    clean_keyword = keyword.strip()
-    if clean_keyword:
-        title_mask = candidates["title"].fillna("").str.contains(
-            clean_keyword,
-            case=False,
-            regex=False,
-        )
-        summary_mask = candidates["summary"].fillna("").str.contains(
-            clean_keyword,
-            case=False,
-            regex=False,
-        )
-        candidates = candidates[title_mask | summary_mask]
-
-    candidates = candidates.sort_values(
-        "published_at",
-        ascending=False,
-        na_position="last",
-    ).reset_index(drop=True)
-    return candidates.head(limit).reset_index(drop=True)
-
-
-def build_article_option_map(metadata: pd.DataFrame) -> dict[str, str]:
-    """Build readable article labels for semantic search controls."""
-
-    option_map: dict[str, str] = {}
-    for _, row in metadata.iterrows():
-        published_at = row.get("published_at")
-        if pd.notna(published_at):
-            date_prefix = pd.Timestamp(published_at).strftime("%Y-%m-%d")
-        else:
-            date_prefix = "unknown-date"
-
-        source = str(row.get("source") or "unknown-source").strip()
-        title = str(row.get("title") or "untitled article").strip()
-        label = f"{date_prefix} | {source} | {title}"
-        option_map[label] = str(row["article_id"])
-    return option_map
-
-
 if st is not None:
 
     @st.cache_resource(show_spinner=False)
@@ -834,13 +733,6 @@ if st is not None:
         )
         return analyzer, summary, context
 
-    @st.cache_resource(show_spinner=False)
-    def load_embedding_bundle(file_stem: str) -> dict[str, Any]:
-        """Load and cache one article embedding bundle from disk."""
-
-        store = LocalDataStore()
-        return store.load_article_embedding_bundle(file_stem=file_stem)
-
 else:
 
     def load_analysis_bundle(
@@ -850,13 +742,6 @@ else:
         top_k: int | None,
         topic_weight: str,
     ) -> tuple[NetworkAnalyzer, dict[str, Any], dict[str, Any]]:
-        """Raise a clear error when Streamlit is not installed."""
-
-        raise RuntimeError(
-            "Streamlit is not installed. Run 'pip install -r requirements.txt'."
-        )
-
-    def load_embedding_bundle(file_stem: str) -> dict[str, Any]:
         """Raise a clear error when Streamlit is not installed."""
 
         raise RuntimeError(
@@ -1138,110 +1023,6 @@ def render_llm_impact_tab(
     st.dataframe(article_detail, use_container_width=True, hide_index=True)
 
 
-def render_semantic_news_tab(
-    embedding_bundle: dict[str, Any] | None,
-    selected_run: str | None,
-    tickers: list[str] | None,
-) -> None:
-    """Render semantic nearest-neighbor retrieval over embedded articles."""
-
-    if SemanticNewsRetriever is None:
-        st.info(
-            "Semantic retrieval helpers are not available in this bundle. "
-            "The rest of the query app can still run normally."
-        )
-        return
-
-    if embedding_bundle is None or selected_run is None:
-        st.info(
-            "No embedding run is loaded. Run `python article_embeddings.py ...` "
-            "first, then select a run from the sidebar."
-        )
-        return
-
-    filtered_bundle = filter_embedding_bundle_by_tickers(embedding_bundle, tickers)
-    metadata = filtered_bundle["metadata"]
-    vectors = filtered_bundle["vectors"]
-    if metadata.empty:
-        st.info("No embedded articles match the current ticker filter.")
-        return
-
-    try:
-        retriever = SemanticNewsRetriever(metadata=metadata, vectors=vectors)
-    except SemanticRetrieverError as exc:
-        st.error(f"Semantic retrieval could not start: {exc}")
-        return
-
-    provider = str(metadata["embedding_provider"].iloc[0])
-    model = str(metadata["embedding_model"].iloc[0])
-    vector_dim = int(metadata["vector_dim"].iloc[0])
-
-    st.markdown(f"### Semantic News Retrieval: `{selected_run}`")
-    st.caption(
-        "This view retrieves nearest-neighbor articles in embedding space. "
-        "Use a keyword to narrow the source article list, then inspect the top matches."
-    )
-
-    metric_columns = st.columns(4)
-    metric_columns[0].metric("Embedded Articles", len(metadata))
-    metric_columns[1].metric("Vector Dim", vector_dim)
-    metric_columns[2].metric("Provider", provider)
-    metric_columns[3].metric("Model", model)
-
-    keyword = st.text_input(
-        "Keyword Filter",
-        value="",
-        help="Optional title/summary keyword filter for the source-article picker.",
-        key="semantic_keyword_filter",
-    )
-    top_k = st.slider(
-        "Top Similar Articles",
-        min_value=3,
-        max_value=10,
-        value=5,
-        step=1,
-        key="semantic_top_k",
-    )
-
-    candidate_frame = filter_semantic_candidates(metadata, keyword=keyword, limit=200)
-    if candidate_frame.empty:
-        st.warning("No source articles matched the current keyword filter.")
-        return
-
-    option_map = build_article_option_map(candidate_frame)
-    selected_label = st.selectbox(
-        "Source Article",
-        options=list(option_map.keys()),
-        key="semantic_source_article",
-    )
-    if not selected_label:
-        return
-
-    source_article = retriever.get_article(option_map[selected_label])
-    similar_articles = retriever.find_similar_articles(
-        article_id=option_map[selected_label],
-        top_k=top_k,
-    )
-    result_frame = similar_articles.copy()
-    if not result_frame.empty:
-        result_frame["similarity_score"] = result_frame["similarity_score"].round(4)
-        result_frame["summary"] = result_frame["summary"].fillna("").str.slice(0, 220)
-
-    st.caption("Seed Article")
-    left_column, right_column = st.columns(2)
-    with left_column:
-        st.write(f"**Title:** {source_article.get('title') or 'Unknown'}")
-        st.write(f"**Source:** {source_article.get('source') or 'Unknown'}")
-    with right_column:
-        st.write(f"**Published At:** {source_article.get('published_at')}")
-        st.write(f"**Tickers:** {source_article.get('tickers') or 'None'}")
-
-    st.write(source_article.get("summary") or "No summary available.")
-
-    st.caption("Most Similar Articles")
-    st.dataframe(result_frame, use_container_width=True, hide_index=True)
-
-
 def render_new_news_analysis_tab(analyzer: NetworkAnalyzer) -> None:
     """Render one-shot LLM assessment for a new user-provided news item."""
 
@@ -1509,25 +1290,6 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
                 "Choose None to hide the impact tab content."
             ),
         )
-        include_semantic = semantic_features_available()
-        selected_embedding_run = "None"
-        if include_semantic:
-            st.header("Semantic Retrieval")
-            embedding_run_options = llm_store.list_embedding_runs()
-            selected_embedding_run = st.selectbox(
-                "Embedding Run",
-                options=["None"] + embedding_run_options,
-                index=0 if not embedding_run_options else 1,
-                help=(
-                    "Optional offline article embedding run from data/raw/embeddings/. "
-                    "Choose None to hide the semantic retrieval tab content."
-                ),
-            )
-        else:
-            st.caption(
-                "Semantic retrieval is not included in this course-only bundle. "
-                "The core graph and LLM impact features are fully available."
-            )
 
     if embedded:
         st.caption(
@@ -1601,14 +1363,7 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
         except LocalDataStoreError as exc:
             st.warning(f"LLM impact data could not be loaded: {exc}")
 
-    embedding_bundle: dict[str, Any] | None = None
-    if include_semantic and selected_embedding_run != "None":
-        try:
-            embedding_bundle = load_embedding_bundle(selected_embedding_run)
-        except LocalDataStoreError as exc:
-            st.warning(f"Embedding data could not be loaded: {exc}")
-
-    tab_labels = build_query_tab_labels(include_semantic=include_semantic)
+    tab_labels = build_query_tab_labels()
     tabs = st.tabs(tab_labels)
 
     with tabs[0]:
@@ -1628,15 +1383,6 @@ def run_app(*, configure_page: bool = True, embedded: bool = False) -> None:
         )
     with tabs[6]:
         render_new_news_analysis_tab(analyzer)
-    if include_semantic:
-        with tabs[7]:
-            render_semantic_news_tab(
-                embedding_bundle=embedding_bundle,
-                selected_run=(
-                    None if selected_embedding_run == "None" else selected_embedding_run
-                ),
-                tickers=tickers,
-            )
 
 
 if __name__ == "__main__":

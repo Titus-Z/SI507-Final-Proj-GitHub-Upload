@@ -8,6 +8,18 @@
 - 能直接部署到 Streamlit Cloud
 - 保留 CLI、测试、学习文档和本地数据快照
 
+## 老师/评分者建议阅读顺序
+
+如果只想快速理解作业，请按这个顺序看：
+
+1. `SUBMISSION_SUMMARY.md`
+2. `DESIGN_DECISIONS_AND_COMPARISONS.md`
+3. `README.md`
+4. `study_docs/README.md`
+
+这几份文件已经覆盖：项目目标、图结构设计、交互模式、设计决策、
+方案对比、运行方式和测试方式。
+
 ## 项目核心
 
 这个项目不是股价预测器，也不是投资建议工具。
@@ -55,12 +67,14 @@
   - 新新闻影响评估
 - `news_graph_augmenter.py`
   - 新新闻接回图结构
+- `SUBMISSION_SUMMARY.md`
+  - 1 页英文上交摘要
 - `DESIGN_DECISIONS_AND_COMPARISONS.md`
   - 面向课程评分标准的设计决策与对比实验总结
 - `tests/`
   - 核心测试
 - `study_docs/`
-  - 按顺序阅读的学习文档
+  - 按顺序阅读的学习文档，先看里面的 `README.md`
 
 ## 本地运行
 
@@ -140,11 +154,14 @@ OPENAI_API_KEY = "你的_openai_api_key"
 
 先读：
 
-1. `study_docs/01_项目全景与最终目标.md`
-2. `study_docs/02_数据源与本地数据快照.md`
-3. `study_docs/04_图是怎么构建出来的.md`
-4. `study_docs/11_设计决策与方案比较.md`
-5. `study_docs/05_图分析层到底在回答什么问题.md`
+1. `SUBMISSION_SUMMARY.md`
+2. `DESIGN_DECISIONS_AND_COMPARISONS.md`
+3. `study_docs/README.md`
+4. `study_docs/01_项目全景与最终目标.md`
+5. `study_docs/02_数据源与本地数据快照.md`
+6. `study_docs/04_图是怎么构建出来的.md`
+7. `study_docs/11_设计决策与方案比较.md`
+8. `study_docs/05_图分析层到底在回答什么问题.md`
 
 然后实际运行：
 

@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 import pytest
 
@@ -147,40 +146,3 @@ def test_missing_price_directory_raises_clear_error(tmp_path: Path) -> None:
 
     with pytest.raises(LocalDataStoreError, match="Price directory not found"):
         store.load_price_tables()
-
-
-def test_list_and_load_article_embedding_bundle(tmp_path: Path) -> None:
-    """Embedding runs should be discoverable and loadable from local disk."""
-
-    store = build_store(tmp_path)
-    embedding_dir = tmp_path / "data" / "raw" / "embeddings"
-    embedding_dir.mkdir(parents=True, exist_ok=True)
-
-    metadata = pd.DataFrame(
-        [
-            {
-                "article_id": "a1",
-                "title": "Apple AI push",
-                "url": "https://example.com/a1",
-                "published_at": "2026-03-20T12:00:00",
-                "source": "Reuters",
-                "summary": "Apple launched new AI tooling.",
-                "tickers": "AAPL",
-                "ticker_count": 1,
-                "embedding_text": "Title: Apple AI push",
-                "embedding_provider": "hash",
-                "embedding_model": "hash-8",
-                "vector_dim": 8,
-                "embedded_at": "2026-04-05T18:00:00",
-            }
-        ]
-    )
-    metadata.to_csv(embedding_dir / "demo_run_metadata.csv", index=False)
-    np.save(embedding_dir / "demo_run_vectors.npy", np.ones((1, 8), dtype=np.float32))
-
-    assert store.list_embedding_runs() == ["demo_run"]
-
-    bundle = store.load_article_embedding_bundle("demo_run")
-
-    assert len(bundle["metadata"]) == 1
-    assert bundle["vectors"].shape == (1, 8)
